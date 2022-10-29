@@ -1,59 +1,72 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(const MyApp());
+class MyAppBar extends StatelessWidget {
+  const MyAppBar({super.key, required this.title});
 
-class MyApp extends StatelessWidget{
-  const MyApp({super.key});
+  final Widget title;
 
   @override
-  Widget build(BuildContext context){
-    return MaterialApp(
-        title: "Flutter Layout Constrains",
-        theme:ThemeData(
-            primarySwatch: Colors.indigo
-        ),
-        home: const HomePage(homePageTitle: "Counter",)
-    );
+  Widget build(BuildContext context) {
+    return Container(
+        height: 60.0,
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        decoration: BoxDecoration(color: Colors.purple.shade600),
+        child: Row(
+          children: [
+            IconButton(
+              icon: Icon(
+                Icons.menu,
+                color: Colors.purple.shade900,
+              ),
+              tooltip: 'Navigation Menu',
+              onPressed: null,
+            ),
+            Expanded(
+              child: title,
+            ),
+            const IconButton(
+              icon: Icon(Icons.search),
+              tooltip: 'Search',
+              onPressed: null,
+            ),
+          ],
+        ));
   }
 }
 
-class HomePage extends StatefulWidget{
-  const HomePage({super.key, required this.homePageTitle});
-
-  final String homePageTitle;
+class MyScaffold extends StatelessWidget {
+  const MyScaffold({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage>{
-  int _counter = 0;
-
-  @override
-  Widget build(BuildContext context){
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.homePageTitle),
-      ),
-      body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('You have pushed the button this many times:'),
-              Text('$_counter',
-                style: Theme.of(context).textTheme.headline4,
-              )
-            ],
+  Widget build(BuildContext context) {
+    return Material(
+      child: Container(
+        color: Colors.black,
+        child: Column(children: [
+          MyAppBar(
+            title: Text(
+              'Common Widgets',
+              style: Theme.of(context).primaryTextTheme.headline6,
+            ),
+          ),
+          Expanded(
+            child: Center(
+                child: Text(
+              "Welcome to Widget World 🎊💫",
+              style: TextStyle(
+                color: Colors.purple[500],
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            )),
           )
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-          setState((){
-            _counter++;
-          });
-        },
-        child: const Icon(Icons.add),
+        ]),
       ),
     );
   }
 }
+
+void main() => runApp(const MaterialApp(
+      title: "Basic widgets",
+      home: SafeArea(child: MyScaffold()),
+    ));
