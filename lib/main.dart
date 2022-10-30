@@ -2,9 +2,76 @@ import 'package:flutter/material.dart';
 
 void main() {
   runApp(MaterialApp(
-    title: 'Image Card',
-    theme: ThemeData(primarySwatch: Colors.green),
-    home: Scaffold(
+      title: 'Image Card',
+      theme: ThemeData(primarySwatch: Colors.green),
+      home: const MyApp()));
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    /* title-section */
+    Widget titleSection = Container(
+      padding: const EdgeInsets.all(32),
+      child: Row(
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Oeschinen Lake Campground',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Kandersteg, Switzerland',
+                style: TextStyle(
+                  color: Colors.grey[500],
+                ),
+              ),
+            ],
+          ),
+          const Spacer(),
+          Icon(
+            Icons.star,
+            color: Colors.red[500],
+          ),
+          const Text('41'),
+        ],
+      ),
+    );
+
+    /* text-section */
+    Widget textSection = const Padding(
+      padding: EdgeInsets.all(32),
+      child: Text(
+        'Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese '
+        'Alps. Situated 1,578 meters above sea level, it is one of the '
+        'larger Alpine Lakes. A gondola ride from Kandersteg, followed by a '
+        'half-hour walk through pastures and pine forest, leads you to the '
+        'lake, which warms to 20 degrees Celsius in the summer. Activities '
+        'enjoyed here include rowing, and riding the summer toboggan run.',
+        softWrap: true,
+      ),
+    );
+
+    /* button-section */
+    Color color = Theme.of(context).primaryColor;
+
+    Widget buttonSection = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        _buildButtonColumn(color, Icons.call, 'CALL'),
+        _buildButtonColumn(color, Icons.near_me, 'ROUTE'),
+        _buildButtonColumn(color, Icons.share, 'SHARE'),
+      ],
+    );
+
+    return Scaffold(
       appBar: AppBar(
         title: const Text("Image Card"),
       ),
@@ -17,80 +84,14 @@ void main() {
             fit: BoxFit.cover,
           ),
           titleSection,
-          const ButtonSection(),
+          buttonSection,
           textSection
         ],
       ),
-    ),
-  ));
-}
-
-Widget titleSection = Container(
-  padding: const EdgeInsets.all(32),
-  child: Row(
-    children: [
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.only(bottom: 8),
-              child: const Text(
-                'Oeschinen Lake Campground',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Text(
-              'Kandersteg, Switzerland',
-              style: TextStyle(
-                color: Colors.grey[500],
-              ),
-            ),
-          ],
-        ),
-      ),
-      Icon(
-        Icons.star,
-        color: Colors.red[500],
-      ),
-      const Text('41'),
-    ],
-  ),
-);
-
-Widget textSection = const Padding(
-  padding: EdgeInsets.all(32),
-  child: Text(
-    'Lake Oeschinen lies at the foot of the Blüemlisalp in the Bernese '
-    'Alps. Situated 1,578 meters above sea level, it is one of the '
-    'larger Alpine Lakes. A gondola ride from Kandersteg, followed by a '
-    'half-hour walk through pastures and pine forest, leads you to the '
-    'lake, which warms to 20 degrees Celsius in the summer. Activities '
-    'enjoyed here include rowing, and riding the summer toboggan run.',
-    softWrap: true,
-  ),
-);
-
-class ButtonSection extends StatelessWidget {
-  const ButtonSection({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    Color color = Theme.of(context).primaryColor;
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _buildButtonColumn(color, Icons.call, 'CALL'),
-        _buildButtonColumn(color, Icons.near_me, 'ROUTE'),
-        _buildButtonColumn(color, Icons.share, 'SHARE'),
-      ],
     );
-    ;
   }
 
+  /* build-button-column-method */
   Column _buildButtonColumn(Color color, IconData icon, String label) {
     return Column(
       mainAxisSize: MainAxisSize.min,
