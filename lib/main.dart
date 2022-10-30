@@ -1,72 +1,109 @@
 import 'package:flutter/material.dart';
 
-class MyAppBar extends StatelessWidget {
-  const MyAppBar({super.key, required this.title});
+/* Types */
+class Product {
+  const Product({required this.name});
 
-  final Widget title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        height: 60.0,
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        decoration: BoxDecoration(color: Colors.purple.shade600),
-        child: Row(
-          children: [
-            IconButton(
-              icon: Icon(
-                Icons.menu,
-                color: Colors.purple.shade900,
-              ),
-              tooltip: 'Navigation Menu',
-              onPressed: null,
-            ),
-            Expanded(
-              child: title,
-            ),
-            const IconButton(
-              icon: Icon(Icons.search),
-              tooltip: 'Search',
-              onPressed: null,
-            ),
-          ],
-        ));
-  }
+  final String name;
 }
 
-class MyScaffold extends StatelessWidget {
-  const MyScaffold({super.key});
+typedef CartChangedCallback = Function(Product product, bool inCart);
+
+/* main */
+void main() {
+  runApp(
+    const MaterialApp(
+      title: "Shopping app",
+      home: ShoppingList(
+        products: [
+          Product(name: 'Eggs'),
+          Product(name: 'Flour'),
+          Product(name: 'Chocolate chips'),
+        ],
+      ),
+    ),
+  );
+}
+
+/* shoppingList Widget */
+class ShoppingList extends StatefulWidget {
+  const ShoppingList({super.key, required this.products});
+
+  final List<Product> products;
+
+  @override
+  State<ShoppingList> createState() => _ShoppingListState();
+}
+
+/* state */
+class _ShoppingListState extends State<ShoppingList> {
+  final _shoppingCart = <Product>{};
+
+  void _handleCartChanged(Product product, bool inCart) {
+    setState(() {
+      (!inCart) ? _shoppingCart.add(product) : _shoppingCart.remove(product);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Container(
-        color: Colors.black,
-        child: Column(children: [
-          MyAppBar(
-            title: Text(
-              'Common Widgets',
-              style: Theme.of(context).primaryTextTheme.headline6,
-            ),
-          ),
-          Expanded(
-            child: Center(
-                child: Text(
-              "Welcome to Widget World 🎊💫",
-              style: TextStyle(
-                color: Colors.purple[500],
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            )),
-          )
-        ]),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Shopper"),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        children: widget.products.map((product) {
+          return ShoppingListItem(
+            product: product,
+            inCart: _shoppingCart.contains(product),
+            onCartChanged: _handleCartChanged,
+          );
+        }).toList(),
       ),
     );
   }
 }
 
-void main() => runApp(const MaterialApp(
-      title: "Basic widgets",
-      home: SafeArea(child: MyScaffold()),
-    ));
+/* shoppingListItem Widgets */
+class ShoppingListItem extends StatelessWidget {
+  ShoppingListItem({
+    required this.product,
+    required this.inCart,
+    required this.onCartChanged,
+  }) : super(key: ObjectKey(product));
+
+  final Product product;
+  final bool inCart;
+  final CartChangedCallback onCartChanged;
+
+  Color _getColor(BuildContext context) {
+    return inCart ? Colors.black54 : Theme.of(context).primaryColor;
+  }
+
+  TextStyle? _getTextStyle(BuildContext context) {
+    return !inCart
+        ? null
+        : const TextStyle(
+            color: Colors.black54,
+            decoration: TextDecoration.lineThrough,
+          );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: () {
+        onCartChanged(product, inCart);
+      },
+      leading: CircleAvatar(
+        backgroundColor: _getColor(context),
+        child: Text(product.name[0]),
+      ),
+      title: Text(
+        product.name,
+        style: _getTextStyle(context),
+      ),
+    );
+  }
+}
